@@ -21,14 +21,13 @@ export class PortDetailComponent implements OnInit, OnChanges {
     this.externalData = [];
     this.formData = [];
     if (changes.data.currentValue) {
-      let device = sessionStorage.getItem("deviceId")
-      console.log("deviceID===",device)
+      let device = sessionStorage.getItem("deviceName")
       this.formData = changes.data.currentValue.map((d: any,index:number) => {
         d["name"]=DeviceDetail.portObj[d.x+"_"+d.y].name;
-        if(index === 3 && changes.data.currentValue.length == 4 && device === "1"){
+        if(index === 3 && changes.data.currentValue.length == 4 && device === "NMOS"){
            d["name"] =  changes.data.currentValue[1].pname
         }
-        if(index === 3 && changes.data.currentValue.length == 4 && device === "3"){
+        if(index === 3 && changes.data.currentValue.length == 4 && device === "PMOS"){
            d["name"] =  changes.data.currentValue[0].pname
         }
         return d;

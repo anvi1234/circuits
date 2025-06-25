@@ -34,8 +34,8 @@ export class PropertyPanelComponent {
       onCanvasMouseRelease(null);
       this.isDeviceSeleted = false;
       this.device_id = parseInt(id + '');
-      console.log("deviceId9", this.device_id)
       this.device_type = DeviceDetail.deviceTypeObj[id];
+      sessionStorage.setItem("deviceName",DeviceDetail.deviceSubTypeObj[id])
       setTimeout(()=>{
         this.isDeviceSeleted=true;
         this.devicePropertyCallBack(id, JSON.parse(obj) || []);
@@ -77,8 +77,6 @@ export class PropertyPanelComponent {
     // console.log(this.window)
   }
   devicePropertyCallBack(id: string, obj: any) {
-    console.log("id",id,obj)
-    sessionStorage.setItem("deviceId",id)
     this.externalPower = [];
     this.ports = this.device_id > 0 ? DeviceDetail.filterPointById(id) : [];
     const deviceDetail = DeviceDetail.findDeviceById(id);

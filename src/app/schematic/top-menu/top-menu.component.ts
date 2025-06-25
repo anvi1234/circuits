@@ -144,9 +144,7 @@ export class TopMenuComponent {
     });
   }
   addDevice(d: Command) {
-    console.log("device",d)
     CircuitJS1.menuPerformed(d.name, d.value);
-    sessionStorage.setItem("device",d.value)
     selectItem(d);
   }
   setCurrentStatus() {

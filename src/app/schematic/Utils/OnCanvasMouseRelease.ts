@@ -26,6 +26,7 @@ export class DeviceDetail {
   public static wirePortObj: any;
   public static deviceList: any;
   public static deviceTypeObj: any;
+  public static deviceSubTypeObj:any;
   private static callBackList: any = [];
   static undoItemList:any=[];
   static redoItemList:any=[];
@@ -33,6 +34,9 @@ export class DeviceDetail {
     addDeviceChange(({ portObj, wireObj, wirePort, deviceTypeObj, deviceJson, pointObj, pointJson }: any) => {
       this.portObj = portObj;
       this.deviceTypeObj = deviceTypeObj;
+      this.deviceSubTypeObj = this.mapDidToSubType(deviceJson);
+      console.log("deviceTypeObj",deviceTypeObj)
+      console.log("prot",portObj,wireObj,wirePort,deviceJson)
       this.deviceList = deviceJson;
       this.updateLatestPoint();
       //this.updatePoint(pointJson)
@@ -78,6 +82,13 @@ export class DeviceDetail {
       }
     });
   }
+
+  static mapDidToSubType(devices:any[]): Record<string, string> {
+  return devices.reduce((acc, curr) => {
+    acc[curr.did] = curr.subType;
+    return acc;
+  }, {} as Record<string, string>);
+}
 
   public static updatePoint(pointJson: any) {
     this.pointList = pointJson.map((d: any) => {

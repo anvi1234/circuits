@@ -9,7 +9,6 @@ export class Mosfet extends Circuit implements CircuitInterface {
   length: number=0;
   multiplier: number=0;
   is_body_active:boolean=false;
-  isNmos:boolean = false;
   constructor(id:number,x:number,y:number,x1:number,y1:number,threshold_voltage:number,isNmos:boolean) {
     super(id,x,y,x1,y1,isNmos?DEVICE_TYPE.NMOS:DEVICE_TYPE.PMOS)
     this.threshold_voltage=threshold_voltage;
@@ -31,7 +30,6 @@ export class Mosfet extends Circuit implements CircuitInterface {
   update(id:number){
     this.updateComman(id);
     this.setDeviceProperty(id,"mosfet_threshold_voltage",parseInt(this.threshold_voltage+""));
-     this.setDeviceProperty(id,"isNMOS", this.isNmos);
     //this.setDeviceProperty(id,"mosfet_beta",this);
     this.setDeviceProperty(id,"transistor_width", parseInt(this.width+""));
     this.setDeviceProperty(id,"transistor_length",parseInt(this.length+""));

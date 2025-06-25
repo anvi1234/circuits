@@ -45,8 +45,7 @@ export type MOSFET={
     mosfet_beta: number,
     transistor_width: number,
     transistor_length: number,
-    transistor_multiplier: number,
-    isNMOS:boolean
+    transistor_multiplier: number
 }
 
 
