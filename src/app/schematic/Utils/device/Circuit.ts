@@ -44,13 +44,20 @@ export class Circuit{
       }
       return null;
     }
+
+
+
     updateComman(id:any){
-      this.setDeviceProperty(id,"device_name",this.name);
+    try {
+        this.setDeviceProperty(id,"device_name",this.name);
       if(!CircuitConst.is_copy_ele){
           this.port_list.forEach((d:PORT_DETAIL)=>{
             this.setPortProperty(d.netType,d.portName);
           })
       }
+    } catch (error) {
+      console.log("errorr",error)
+    }
     }
     setDeviceProperty(id:number,key:string,value:any){
         this.window.deviceInfo.setEditDeviceValueById(id,key,value,1,-1);
@@ -60,6 +67,10 @@ export class Circuit{
     }
     setPostion(){
         CircuitJS1.setPostion(this.id,parseInt(this.x+""),parseInt(this.y+""),parseInt(this.x1+""),parseInt(this.y1+""));
+    }
+
+    createNewCircuit(){
+      CircuitJS1.createNewCircuit(this.type, this.x, this.y,this.x1, this.y1);
     }
     setSelected(val:string){
       

@@ -35,8 +35,6 @@ export class DeviceDetail {
       this.portObj = portObj;
       this.deviceTypeObj = deviceTypeObj;
       this.deviceSubTypeObj = this.mapDidToSubType(deviceJson);
-      console.log("deviceTypeObj",deviceTypeObj)
-      console.log("prot",portObj,wireObj,wirePort,deviceJson)
       this.deviceList = deviceJson;
       this.updateLatestPoint();
       //this.updatePoint(pointJson)

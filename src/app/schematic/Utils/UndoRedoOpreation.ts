@@ -41,14 +41,14 @@ export class UndoRedo{
     if(id){
       const divData=deviceCir.device.find((d)=>d.id==id)
       if(divData){
-          cirList.push(divData);
+          cirList.push(_.cloneDeep(divData));
       } 
     }
     else{
       cirList= deviceCir.device.filter((d)=>d.is_selected);
     }
     if(cirList.length>0){
-      this.undo.push({data:cirList,isDeleted:false, afterData:null})
+      this.undo.push({data:_.cloneDeep(cirList),isDeleted:false, afterData:null})
       this.redo=[]
     }
     // if(!id)
@@ -78,19 +78,21 @@ export class UndoRedo{
       return !toDelete.some(wire => wire.id === idInArray2);
     });
     toDelete.forEach(d => {
-      console.log(`Deleting element id ${d.id}`);
       CircuitJS1.deleteEle(d.id);
+      CircuitJS1.resetAction();
     });
 
     const cloned = toDelete.map((e:any) => ({ ...e }));
-      this.undo.push({ data: cloned, isDeleted: true,afterData:null});
+      this.undo.push({ data:  _.cloneDeep(cloned), isDeleted: true });
+      // this.undo.push({ data: _.cloneDeep(cloned), isDeleted: true,afterData:null});
     this.redo = [];
       // Optional: Re-render canvas
       setTimeout(() => onCanvasMouseRelease(), 100); 
   }
-  
+
+
    static doUndo() {
-    let typeForRedo = null;
+    let typeForRedo = ''
     let clonedData = [];
     if (this.undo.length === 0) return;
    if(this.checkForDuplicates(this.undo)){
@@ -113,8 +115,12 @@ export class UndoRedo{
     }
     else{
     if (isDeleted === true && !afterData) {
+      data = _.cloneDeep(data);
       data.forEach((item:any) => {
-        CircuitJS1.addUndoEle(item)
+       const freshItem = _.cloneDeep(item);
+          this.manuallyRestoreDevice(freshItem)
+ 
+      
       });   
     }
 
@@ -146,6 +152,38 @@ export class UndoRedo{
       }
     })
   }
+
+
+static manuallyRestoreDevice(item: any) {
+  // 1. Create new circuit of same type at same location
+  const circuit = new Circuit(undefined, item.x, item.y, item.x1, item.y1, item.type);
+  circuit.setName(item.name);
+  circuit.setPortList(item.port_list);
+  circuit.createNewCircuit();
+
+  // 2. Wait and update name + ports
+  setTimeout(() => {
+    const raw = CircuitJS1.getAllDevice?.();
+    const devices = typeof raw === 'string' ? JSON.parse(raw) : raw;
+
+    const matched = devices.find((d: any) =>
+      d.type === item.type &&
+      d.x == item.x && d.y == item.y &&
+      d.x2 == item.x1 && d.y2 == item.y1
+    );
+
+    if (matched) {
+      circuit.id = matched.id;
+      circuit.updateComman(matched.id); // Set name and ports
+      CircuitJS1.setPostion(circuit.id, +item.x, +item.y, +item.x1, +item.y1);
+      CircuitJS1.resetAction(); // Optional, for interaction state
+    } else {
+      console.warn("❌ Could not find re-added device in canvas");
+    }
+  }, 100);
+}
+
+
 
 
 static redraw(data:any) {
@@ -301,8 +339,7 @@ static checkForDuplicates(data: { data:any[] }[]): boolean {
         cirList.forEach((d:any)=>{
           if(d.type!=DEVICE_TYPE.SUB_CIRCUIT){
             CircuitJS1.rotateEleById(d.id,isclockWise?0:1)
-             CircuitJS1.rotateEleById(d.id, 1);
-            // CircuitJS1.updateElePositionsOrBounds(d.id);
+            CircuitJS1.updateElePositionsOrBounds(d.id);
             CircuitJS1.repaint();
           }
         
