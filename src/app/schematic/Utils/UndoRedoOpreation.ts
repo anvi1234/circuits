@@ -324,6 +324,9 @@ static checkForDuplicates(data: { data:any[] }[]): boolean {
     }, 100);
   }
   
+
+
+
  static rotateAllEle(id:any,isclockWise:boolean){
   const deviceCir:DeviceComponent= getDeviceToCircuitObj()
     let cirList:any=[];
@@ -338,15 +341,22 @@ static checkForDuplicates(data: { data:any[] }[]): boolean {
     if(cirList.length>0){
         cirList.forEach((d:any)=>{
           if(d.type!=DEVICE_TYPE.SUB_CIRCUIT){
-            CircuitJS1.rotateEleById(d.id,isclockWise?0:1)
-            CircuitJS1.updateElePositionsOrBounds(d.id);
-            CircuitJS1.repaint();
+         
+          try {
+              CircuitJS1.rotateEleById(d.id,isclockWise?0:1)
+              CircuitJS1.resetAction()
+          } catch (error) {
+            console.log("error",error)
+          }
+            // CircuitJS1.repaint();
+             
           }
         
         })
         this.addHistry(null);
     }
  }
+
  static copyOrCut(id:any,isCopy:boolean){
   const deviceCir:DeviceComponent= getDeviceToCircuitObj()
   let cirList:any=[];
